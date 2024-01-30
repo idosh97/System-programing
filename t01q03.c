@@ -110,14 +110,14 @@ void drawRoom(const SmartHomeState *state){
 }
 
 bool isValidInput(char d){
-    return (d >= '0' && d <= '5');
+    return (d >= '1' && d <= '5');
 }
 
 void getSimCode(int arr[]) {
-    char userInput[6]; // limit the input to 6 characters
+    char userInput[7]; // limit the input to 6 characters
     while (1) {
         printf("Simulation senario code: Enter Five digits without spaces (1-5): ");
-        scanf("%5s[^\n]", userInput);
+        scanf("%6s[^\n]", userInput);
 
         //discard any remaining characters in the buffer
         int c;
@@ -129,7 +129,6 @@ void getSimCode(int arr[]) {
         while (userInput[l] != '\0' && l<6) {
             l++;
         }
-        //printf("length = %d\n", l);////////////////////////////////////////////////////////////////////////////////////////
         if (l != 5) {
             printf("Invalid input. Please enter digits from 1 to 5 only.\n");
             continue;
