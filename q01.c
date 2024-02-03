@@ -55,21 +55,18 @@ void move_player(char grid[GRID_SIZE][GRID_SIZE], int *player_col, int *player_r
     *valid_move = 1;
     if (user_choice == 'U' && *player_row > 0) {
         (*player_row)--;
-        //printf("Moved up.\n");
     } else if (user_choice == 'D' && *player_row < GRID_SIZE - 1) {
         (*player_row)++;
-        //printf("Moved down.\n");
     } else if (user_choice == 'L' && *player_col > 0) {
         (*player_col)--;
-        //printf("Moved left.\n");
     } else if (user_choice == 'R' && *player_col < GRID_SIZE - 1) {
         (*player_col)++;
-        //printf("Moved right.\n");
     } else {
-        //printf("Invalid move. choose U (up), D(down), L(left) or R(right) to move: \n");
         *valid_move = 0;
+
     }
 }
+
 
 int main() {
     srand(2024); // Seed the random number generator
@@ -83,7 +80,7 @@ int main() {
     initialize_grid(grid);
     display_grid(grid, player_col, player_row);
     treasure_found(grid, &player_col, &player_row, valid_move, moves);
-    while (moves < MAX_MOVES && treasuresFound < MIN_TREASURE_COUNT) {
+    while (moves < MAX_MOVES && treasuresFound < TREASURE_COUNT) {
         //Input validation
         char inpValidation[2];
         while(1) {
@@ -93,33 +90,35 @@ int main() {
             int c;
             while ((c = getchar()) != '\n' && c != EOF) {
             };
-            // Check if the input has exactly 1 character
+            // input is exactly 1 char
             if (inpValidation[0] != '\0' && inpValidation[1] == '\0') {
                 user_choice = inpValidation[0];
+
+                //input not U/D/L/R
+                if (inpValidation[0]!= 'U' && inpValidation[0]!='L' && inpValidation[0]!='D' && inpValidation[0]!='R'){
+                    printf("MyERROR: An illegal operation was performed, so I have to stop the program.\n");
+                    return 1;
+                }
                 break;
             }
+            // input is more than one char
             else {
-                //printf("Invalid move. choose U (up), D(down), L(left) or R(right) to move: \n");
-                if (moves >= MAX_MOVES) {
-                    break;
-                } else {
-                    moves++;
-                    display_grid(grid, player_col, player_row);
-                    treasure_found(grid, &player_col, &player_row, valid_move, moves);
-                }
+                printf("MyERROR: An illegal operation was performed, so I have to stop the program.\n");
+                return 1;
             }
         }
         move_player(grid, &player_col, &player_row, user_choice,&valid_move);
+
+
         if (moves < MAX_MOVES) {
             moves++;
         }
         display_grid(grid, player_col, player_row);
         treasure_found(grid, &player_col, &player_row, valid_move, moves);
     }
-    if (treasuresFound >= MIN_TREASURE_COUNT)
+    if (treasuresFound >= TREASURE_COUNT)
         printf("\nCongratulations! You found all the treasures.\n");
     else
         printf("\nSorry, you ran out of moves.\n");
     return 0;
 }
-//test
