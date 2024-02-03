@@ -21,32 +21,22 @@ void drawRoom(const SmartHomeState *state);
 bool isValidInput(char d);
 void getSimCode(int arr[]);
 
-int flag = 1;
-
 int main() {
     SmartHomeState state;
     int i, simcode[5];
     getSimCode(simcode);//It convert from char digits into integer digits
-    while(flag == 1) {
-        //valid input
-        initializeSmartHome(&state);
-        // Simulate different situations
-        for (i = 0; i < 5; i++) {
-            //update new home state base on the given code (e.g 24553)
-            updateLighting(&state, i % simcode[0] == 0, i % simcode[1] == 0, i % simcode[2] == 0, i % simcode[3],
-                           (4 - i) % simcode[4]);
-            updateTemperature(&state, i);
-            printSmartHomeState(&state);
-            drawRoom(&state);
-            sleep(1); // sleep for 1 second
-        }
-        return 0;
+    initializeSmartHome(&state);
+    // Simulate different situations
+    for (i = 0; i < 5; i++) {
+        //update new home state base on the given code (e.g 24553)
+        updateLighting(&state, i % simcode[0] == 0, i % simcode[1] == 0, i % simcode[2] == 0, i % simcode[3],
+                       (4 - i) % simcode[4]);
+        updateTemperature(&state, i);
+        printSmartHomeState(&state);
+        drawRoom(&state);
+        sleep(1); // sleep for 1 second
     }
-
-    //flag == 0 - invalid input
-    printf("MyERROR: An illegal operation was performed, so I have to stop the program.");
-    return 1;
-
+    return 0;
 }
 
 
@@ -124,43 +114,45 @@ bool isValidInput(char d){
 }
 
 void getSimCode(int arr[]) {
-    char userInput[7]; // limit the input to 6 characters
+    char userInput[6]; // limit the input to 6 characters
+    while (1) {
+        printf("Simulation senario code: Enter Five digits without spaces (1-5): ");
+        scanf("%5s[^\n]", userInput);
 
-    printf("Simulation senario code: Enter Five digits without spaces (1-5): ");
-    scanf("%6s[^\n]", userInput);
+        //discard any remaining characters in the buffer
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF){
+        };
 
-    //discard any remaining characters in the buffer
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF){
-    };
+        // Check if the input has exactly 5 characters
+        int l =0;
+        while (userInput[l] != '\0' && l<6) {
+            l++;
+        }
+        if (l != 5) {
+            printf("Invalid input. Please enter digits from 1 to 5 only.\n");
+            continue;
+        }
 
-    // Check if the input has exactly 5 characters
-    int l =0;
-    while (userInput[l] != '\0' && l<6) {
-        l++;
-    }
-    if (l != 5) {
-        flag = 0;
-        return;
-    }
-
-    // Check if all characters are digits
-    bool validInput = true;
-    for (int i = 0; userInput[i] != '\0'; ++i) {
-        if (!isValidInput(userInput[i])) {
-            validInput = false;
-            break;
+        // Check if all characters are digits
+        bool validInput = true;
+        for (int i = 0; userInput[i] != '\0'; ++i) {
+            if (!isValidInput(userInput[i])) {
+                validInput = false;
+                break;
+            }
+        }
+        if (!validInput) {
+            printf("Invalid input. Please enter digits from 1 to 5 only.\n");
+        } else {
+            // Convert the chars to ints
+            for (int i = 0; i < 5; ++i) {
+                arr[i] = userInput[i] - '0';
+            }
+            break; // Break out of the loop if input is valid
         }
     }
-    if (!validInput) {
-        flag = 0;
-        return;
-    } else {
-        // Convert the chars to ints
-        for (int i = 0; i < 5; ++i) {
-            arr[i] = userInput[i] - '0';
-        }
-        // Print the valid array
-        printf("You entered: %d, %d, %d, %d, %d\n", arr[0], arr[1], arr[2], arr[3], arr[4]);
-    }
+
+    // Print the valid array
+    printf("You entered: %d, %d, %d, %d, %d\n", arr[0], arr[1], arr[2], arr[3], arr[4]);
 }
